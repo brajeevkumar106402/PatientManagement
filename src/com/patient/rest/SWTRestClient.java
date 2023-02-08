@@ -55,8 +55,8 @@ public class SWTRestClient {
 		});
 	}
 
-	public static HttpResponse<String> deletePatient(String patientId) throws IOException, InterruptedException {
-		String serviceUrl = "http://localhost:8081/api/patient/id/" + patientId;
+	public static HttpResponse<String> deletePatient(Long patientId) throws IOException, InterruptedException {
+		String serviceUrl = "http://localhost:8081/api/patient/" + patientId;
 		var request = HttpRequest.newBuilder().uri(URI.create(serviceUrl)).header("Content-Type", "application-json")
 				.DELETE().build();
 		var client = HttpClient.newHttpClient();
@@ -65,7 +65,7 @@ public class SWTRestClient {
 	}
 
 	public static HttpResponse<String> savePatient(Patient patient) throws IOException, InterruptedException {
-		String url = "http://localhost:8081/api/patient/" + patient;
+		String url = "http://localhost:8081/api/patient/" /*+ patient*/;
 		ObjectMapper om = new ObjectMapper();
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Content-Type", "application/json")
