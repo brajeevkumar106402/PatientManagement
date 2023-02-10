@@ -3,6 +3,10 @@ package com.patient.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * Patient is a Model class which hold addressList and telephoneList
+ */
 public class Patient {
 	
 	private Long patient_id;
