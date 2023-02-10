@@ -25,7 +25,8 @@ import com.patient.model.Patient;
 import com.patient.rest.SWTRestClient;
 
 /**
- * This class is used to show the Search Patient record by Its Id and name and load the data int SWT table
+ * This class is used to show the Search Patient record by Its Id and name and
+ * load the data int SWT table
  * 
  */
 public class SWTPateintTable {
@@ -54,11 +55,10 @@ public class SWTPateintTable {
 		this.display = display;
 	}
 
-	
 	/**
 	 * This method is used to search the patient by its ID and Name and populate the
-	 * table data by patient id and patient name 
-	 *  
+	 * table data by patient id and patient name
+	 * 
 	 */
 	public void loadPatientAPI() {
 		shell = new Shell(this.display);
@@ -93,7 +93,7 @@ public class SWTPateintTable {
 		searchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
+
 				int idx = searchOptions.getSelectionIndex();
 
 				if (idText.getText().equals("") || idText.getText().equals(null) && idx != -1) {
@@ -103,7 +103,7 @@ public class SWTPateintTable {
 					messageBox.open();
 				} else {
 					String patientType = searchOptions.getItem(idx);
-				   System.out.println("called Patient by id " + idText.getText());
+					System.out.println("called Patient by id " + idText.getText());
 					if (patientType.equalsIgnoreCase("ByID")) {
 						try {
 							Patient firstPatientById = SWTRestClient.fetchPatientListById(idText.getText());
@@ -115,33 +115,26 @@ public class SWTPateintTable {
 								messageBox.setMessage("Patient " + idText.getText() + "does not exist");
 								// shell.close();
 							}
-						} catch (IOException e1) {
+						} catch (IOException | InterruptedException e1) {
+							e1.printStackTrace();
+						}
+
+						catch (Exception e1) {
 							if (firstPatient == null) {
 								MessageBox messageBox = new MessageBox(shell, SWT.ICON_WORKING);
 								messageBox.setText("fail");
-								messageBox.setMessage("Patient " + idText.getText() + "does not exist");								
+								messageBox.setMessage("Patient " + idText.getText() + "does not exist");
 							}
-							
-						} catch (InterruptedException e1) {							
-							e1.printStackTrace();
+
 						}
-					catch (Exception e1) {
-						if (firstPatient == null) {
-							MessageBox messageBox = new MessageBox(shell, SWT.ICON_WORKING);
-							messageBox.setText("fail");
-							messageBox.setMessage("Patient " + idText.getText() + "does not exist");								
-						}
-						
-					}
 					} else {
-						System.out.println("called Patient by Name " + idText.getText());
 						try {
 							Patient firstPatientByName = SWTRestClient.fetchPatientListByName(idText.getText());
 							firstPatient = firstPatientByName;
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						} catch (InterruptedException e1) {
-							
+
 							e1.printStackTrace();
 						}
 					}
@@ -149,82 +142,83 @@ public class SWTPateintTable {
 						table.removeAll();
 						table.dispose();
 					}
-					if(firstPatient!=null && firstPatient.getPatient_id()>0) {
-					table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-					table.setLinesVisible(true);
-					table.setHeaderVisible(true);
-					table.setBounds(30, 130, 900, 150);
-					GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-					data.heightHint = 200;
-					table.setLayoutData(data);
+					if (firstPatient != null && firstPatient.getPatient_id() > 0) {
+						table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+						table.setLinesVisible(true);
+						table.setHeaderVisible(true);
+						table.setBounds(30, 130, 900, 150);
+						GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+						data.heightHint = 200;
+						table.setLayoutData(data);
 
-					String[] titles = { "patientId", "patientName", "dateOfBirth", "genderCode", "addID1", "addType",
-							"addLine1", "addLine2", "city", "state", "postalCode", "countryCode", "addID2", "addType",
-							"addLine1", "addLine2", "city", "state", "postalCode", "countryCode", "teleID1", "teleType",
-							"teleNumber", "isdCode", "teleID2", "teleType", "teleNumber", "isdCode" };
-					for (int i = 0; i < titles.length; i++) {
-						TableColumn column = new TableColumn(table, SWT.NONE);
-						column.setText(titles[i]);
-						table.getColumn(i).pack();
-					}
-
-					TableItem item = new TableItem(table, SWT.NONE);
-					item.setText(0, firstPatient.getPatient_id().toString());
-					item.setText(1, firstPatient.getPatientName().toString());
-					item.setText(2, firstPatient.getDateOfBirth().toString());
-					item.setText(3, firstPatient.getGenderCode().toString());
-					item.setText(4, firstPatient.getAddressList().get(0).getId().toString());
-					item.setText(5, firstPatient.getAddressList().get(0).getAddressType().toString());
-					item.setText(6, firstPatient.getAddressList().get(0).getAddressLine1().toString());
-					item.setText(7, firstPatient.getAddressList().get(0).getAddressLine2().toString().toString());
-					item.setText(8, firstPatient.getAddressList().get(0).getCity().toString());
-					item.setText(9, firstPatient.getAddressList().get(0).getState().toString());
-					item.setText(10, firstPatient.getAddressList().get(0).getPostalCode().toString());
-					item.setText(11, firstPatient.getAddressList().get(0).getCountry().toString());
-					item.setText(12, firstPatient.getAddressList().get(1).getId().toString());
-					item.setText(13, firstPatient.getAddressList().get(1).getAddressType().toString());
-					item.setText(14, firstPatient.getAddressList().get(1).getAddressLine1().toString());
-					item.setText(15, firstPatient.getAddressList().get(1).getAddressLine2().toString().toString());
-					item.setText(16, firstPatient.getAddressList().get(1).getCity().toString());
-					item.setText(17, firstPatient.getAddressList().get(1).getState().toString());
-					item.setText(18, firstPatient.getAddressList().get(1).getPostalCode().toString());
-					item.setText(19, firstPatient.getAddressList().get(1).getCountry().toString());
-					item.setText(20, firstPatient.getTelephoneList().get(0).getId().toString());
-					item.setText(21, firstPatient.getTelephoneList().get(0).getTelephoneType().toString());
-					item.setText(22, firstPatient.getTelephoneList().get(0).getTelephoneNumber().toString().toString());
-					item.setText(23, firstPatient.getTelephoneList().get(0).getTelephonCountryCode().toString());
-					item.setText(24, firstPatient.getTelephoneList().get(1).getId().toString());
-					item.setText(25, firstPatient.getTelephoneList().get(1).getTelephoneType().toString());
-					item.setText(26, firstPatient.getTelephoneList().get(1).getTelephoneNumber().toString());
-					item.setText(27, firstPatient.getTelephoneList().get(1).getTelephonCountryCode().toString());
-
-					for (int i = 0; i < titles.length; i++) {
-						table.getColumn(i).pack();
-					}
-
-					table.addListener(SWT.Selection, new Listener() {
-						@Override
-						public void handleEvent(Event arg0) {
-							String tableContent = "";
-							TableItem[] selectedColumns = table.getSelection();
-							for (int i = 0; i < selectedColumns.length; i++) {
-								tableContent += selectedColumns[i].getText(i) + " ";
-							}
-							if (tableContent != null && tableContent != "") {
-								viewButton.setEnabled(true);
-								deleteButton.setEnabled(true);
-								modifyButton.setEnabled(true);
-							}
-
+						String[] titles = { "patientId", "patientName", "dateOfBirth", "genderCode", "addID1",
+								"addType", "addLine1", "addLine2", "city", "state", "postalCode", "countryCode",
+								"addID2", "addType", "addLine1", "addLine2", "city", "state", "postalCode",
+								"countryCode", "teleID1", "teleType", "teleNumber", "isdCode", "teleID2", "teleType",
+								"teleNumber", "isdCode" };
+						for (int i = 0; i < titles.length; i++) {
+							TableColumn column = new TableColumn(table, SWT.NONE);
+							column.setText(titles[i]);
+							table.getColumn(i).pack();
 						}
 
-					});
-					
+						TableItem item = new TableItem(table, SWT.NONE);
+						item.setText(0, firstPatient.getPatient_id().toString());
+						item.setText(1, firstPatient.getPatientName().toString());
+						item.setText(2, firstPatient.getDateOfBirth().toString());
+						item.setText(3, firstPatient.getGenderCode().toString());
+						item.setText(4, firstPatient.getAddressList().get(0).getId().toString());
+						item.setText(5, firstPatient.getAddressList().get(0).getAddressType().toString());
+						item.setText(6, firstPatient.getAddressList().get(0).getAddressLine1().toString());
+						item.setText(7, firstPatient.getAddressList().get(0).getAddressLine2().toString().toString());
+						item.setText(8, firstPatient.getAddressList().get(0).getCity().toString());
+						item.setText(9, firstPatient.getAddressList().get(0).getState().toString());
+						item.setText(10, firstPatient.getAddressList().get(0).getPostalCode().toString());
+						item.setText(11, firstPatient.getAddressList().get(0).getCountry().toString());
+						item.setText(12, firstPatient.getAddressList().get(1).getId().toString());
+						item.setText(13, firstPatient.getAddressList().get(1).getAddressType().toString());
+						item.setText(14, firstPatient.getAddressList().get(1).getAddressLine1().toString());
+						item.setText(15, firstPatient.getAddressList().get(1).getAddressLine2().toString().toString());
+						item.setText(16, firstPatient.getAddressList().get(1).getCity().toString());
+						item.setText(17, firstPatient.getAddressList().get(1).getState().toString());
+						item.setText(18, firstPatient.getAddressList().get(1).getPostalCode().toString());
+						item.setText(19, firstPatient.getAddressList().get(1).getCountry().toString());
+						item.setText(20, firstPatient.getTelephoneList().get(0).getId().toString());
+						item.setText(21, firstPatient.getTelephoneList().get(0).getTelephoneType().toString());
+						item.setText(22,
+								firstPatient.getTelephoneList().get(0).getTelephoneNumber().toString().toString());
+						item.setText(23, firstPatient.getTelephoneList().get(0).getTelephonCountryCode().toString());
+						item.setText(24, firstPatient.getTelephoneList().get(1).getId().toString());
+						item.setText(25, firstPatient.getTelephoneList().get(1).getTelephoneType().toString());
+						item.setText(26, firstPatient.getTelephoneList().get(1).getTelephoneNumber().toString());
+						item.setText(27, firstPatient.getTelephoneList().get(1).getTelephonCountryCode().toString());
+
+						for (int i = 0; i < titles.length; i++) {
+							table.getColumn(i).pack();
+						}
+
+						table.addListener(SWT.Selection, new Listener() {
+							@Override
+							public void handleEvent(Event arg0) {
+								String tableContent = "";
+								TableItem[] selectedColumns = table.getSelection();
+								for (int i = 0; i < selectedColumns.length; i++) {
+									tableContent += selectedColumns[i].getText(i) + " ";
+								}
+								if (tableContent != null && tableContent != "") {
+									viewButton.setEnabled(true);
+									deleteButton.setEnabled(true);
+									modifyButton.setEnabled(true);
+								}
+
+							}
+
+						});
+
+					}
 
 				}
-
 			}
-		}
 		});
 
 		viewButton = new Button(shell, SWT.PUSH);
@@ -268,7 +262,7 @@ public class SWTPateintTable {
 					TableItem[] selectedColumns = table.getSelection();
 					Patient patient = null;
 					for (TableItem columns : selectedColumns) {
-						errorornousPateintId = columns.getText(0); 
+						errorornousPateintId = columns.getText(0);
 						patient = SWTRestClient.fetchPatientListById(columns.getText(0));
 					}
 					form.setDataForFieldsForModifyAndCrate(patient, display, true);
@@ -280,7 +274,6 @@ public class SWTPateintTable {
 					;
 
 				}
-				
 
 			}
 		});
@@ -295,7 +288,7 @@ public class SWTPateintTable {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("Called delete!");
-				
+
 				try {
 					TableItem[] item = table.getSelection();
 					for (TableItem itemTable : item) {
@@ -324,9 +317,9 @@ public class SWTPateintTable {
 					;
 
 				}
-				
+
 			}
-			
+
 		});
 		serachName.pack();
 		idText.pack();
@@ -341,9 +334,10 @@ public class SWTPateintTable {
 		shell.setSize(800, 700);
 
 	}
-	
+
 	/**
-	 * This method is used to show the dialog box for error message	 * 
+	 * This method is used to show the dialog box for error message *
+	 * 
 	 * @param shell
 	 * @param errorMsg
 	 */
@@ -360,7 +354,5 @@ public class SWTPateintTable {
 		case SWT.CANCEL:
 		}
 	}
-
-
 
 }
