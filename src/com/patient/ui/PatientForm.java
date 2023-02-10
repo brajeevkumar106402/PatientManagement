@@ -676,7 +676,7 @@ public class PatientForm {
 			List<Address> addressList = new ArrayList<>();
 			Address a1 = new Address();
 			Address a2 = new Address();
-			presentPatient.setPatientName(nameText.getText());
+			presentPatient.setPatientName(nameText.getText().replaceAll(" ",""));
 			presentPatient.setGenderCode(genderOptions.getItem(0));
 
 			presentPatient.setDateOfBirth(doBText.getText());

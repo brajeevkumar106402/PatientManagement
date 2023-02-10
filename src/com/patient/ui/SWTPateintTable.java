@@ -86,6 +86,7 @@ public class SWTPateintTable {
 		searchButton.setVisible(true);
 		searchButton.setBounds(700, 50, 900, 30);
 		searchButton.setFont(font1);
+		searchButton.setBackground(buttonColor);
 		Combo searchOptions = new Combo(shell, SWT.DROP_DOWN);
 		searchOptions.setItems(ITEMS);
 		searchOptions.setBounds(140, 30, 900, 30);
