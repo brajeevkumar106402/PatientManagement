@@ -34,7 +34,6 @@ public class PatientForm {
 	static Label id, patientLabel, label;
 	Color buttonColor;
 	Color headingColor;
-
 	Text idText;
 	Label name;
 	Text nameText;
@@ -180,7 +179,7 @@ public class PatientForm {
 		idText = new Text(shell, SWT.BORDER);
 		idText.setBounds(300, 150, 900, 25);
 		idText.setTextLimit(30);
-		idText.setText("AutoId");
+		idText.setText("");
 		idText.setEditable(false);
 		idText.setVisible(false);
 
@@ -676,11 +675,16 @@ public class PatientForm {
 			List<Address> addressList = new ArrayList<>();
 			Address a1 = new Address();
 			Address a2 = new Address();
+			if(idText.getText()!=null && !idText.getText().isEmpty() ) {
+			presentPatient.setPatient_id(Long.valueOf(idText.getText().replaceAll(" ","")));
+			}
 			presentPatient.setPatientName(nameText.getText().replaceAll(" ",""));
-			presentPatient.setGenderCode(genderOptions.getItem(0));
+			if(genderOptions.getSelectionIndex() ==Gender.MALE.ordinal()) {
+				presentPatient.setGenderCode("MALE");
+			} else
+				presentPatient.setGenderCode("FEMALE");
 
 			presentPatient.setDateOfBirth(doBText.getText());
-
 			a1.setAddressType(address1TypeText.getText());
 			a1.setAddressLine1(address1Line1Text.getText());
 			a1.setAddressLine2(address1Line2Text.getText());
@@ -720,14 +724,14 @@ public class PatientForm {
 		return Integer.valueOf(saveResponse.statusCode()).toString();
 	}
 
-	public void createModifyFormView(Patient oldPatient, Patient newPatient, Shell shell) {
+	/*public void createModifyFormView(Patient oldPatient, Patient newPatient, Shell shell) {
 
 		patientForm = new PatientForm();
 		patientForm.creatPatientInfo(shell, oldPatient);
 		// patientForm.setDataForModifyPage(oldPatient);
 		// patientForm.open();
 
-	}
+	}*/
 	/*
 	 * Method to populate PateintData For crate and modify Button This method
 	 * captured the data from Patient UI and hit the create and update api and and
@@ -740,6 +744,7 @@ public class PatientForm {
 			if (b == false && patient != null
 					&& (patient.getAddressList().size() > 1 && patient.getAddressList().size() < 3)
 					&& (patient.getTelephoneList().size() > 1 && patient.getTelephoneList().size() < 3)) {
+			//	idText.setText(patient.getPatient_id().toString());
 				nameText.setText(patient.getPatientName());
 				nameText.setEditable(false);
 				Gender male = Gender.MALE;
@@ -841,8 +846,9 @@ public class PatientForm {
 			else if (b == true && patient != null
 					&& (patient.getAddressList().size() > 1 && patient.getAddressList().size() < 3)
 					&& (patient.getTelephoneList().size() > 1 && patient.getTelephoneList().size() < 3)) {
+				idText.setText(patient.getPatient_id().toString());
 				nameText.setText(patient.getPatientName());
-				// genderOptions.setData(null);
+				nameText.setEditable(true);
 				doBText.setText(patient.getDateOfBirth() != null ? patient.getDateOfBirth() : "");
 				doBText.setEditable(true);
 				genderOptions.setItems((patient.getGenderCode() != null ? patient.getGenderCode() : null));
@@ -853,8 +859,7 @@ public class PatientForm {
 					genderOptions.select(male.ordinal());
 				} else
 					genderOptions.select(femmale.ordinal());
-
-				genderOptions.setEnabled(false);
+				
 				genderOptions.setEnabled(true);
 				address1TypeText.setText(patient.getAddressList().get(0).getAddressType() != null
 						? patient.getAddressList().get(0).getAddressType()

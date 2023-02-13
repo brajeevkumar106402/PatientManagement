@@ -48,7 +48,7 @@ public class SWTRestClient {
 			patient = om.readValue(response.body(), Patient.class);
 		} catch (IOException | InterruptedException e) {
 			MessageBox messageBox = new MessageBox(shell, SWT.OK | SWT.ICON_WARNING | SWT.CANCEL);
-			messageBox.setMessage("this Patient does not exist whose" + ID);
+			messageBox.setMessage("this Patient does not exist with given " + ID);
 			messageBox.open();
 		}
 
@@ -61,15 +61,19 @@ public class SWTRestClient {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static Patient fetchPatientListByName(String name) throws IOException, InterruptedException {
+	public static List<Patient> fetchPatientListByName(String name) throws IOException, InterruptedException {
 		String serviceUrl = GET_PATIENT_API_NAME + name;
+		
+		
 		var request = HttpRequest.newBuilder().uri(URI.create(serviceUrl)).header("Content-Type", "application-json")
 				.GET().build();
 		var client = HttpClient.newHttpClient();
 		var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		ObjectMapper om = new ObjectMapper();
-		Patient patient = om.readValue(response.body(), Patient.class);
-		return patient;
+		//List<Patient> patient = om.readValue(response.body(), List<Patient>);
+		return om.readValue(response.body(), new TypeReference<List<Patient>>() {
+		});
+	//	return patient;
 	}
 	
 	/**

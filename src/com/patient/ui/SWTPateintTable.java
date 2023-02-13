@@ -1,6 +1,7 @@
 package com.patient.ui;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,6 +33,8 @@ import com.patient.rest.SWTRestClient;
 public class SWTPateintTable {
 	static SWTRestClient sWTRestClient;
 	static Patient firstPatient;
+	static List<Patient> firstPatientByNameList;
+	
 	static Patient showPatient;
 	PatientForm form;
 	Font font1, font;
@@ -129,8 +132,8 @@ public class SWTPateintTable {
 						}
 					} else {
 						try {
-							Patient firstPatientByName = SWTRestClient.fetchPatientListByName(idText.getText());
-							firstPatient = firstPatientByName;
+						List<Patient> firstPatientByName = SWTRestClient.fetchPatientListByName(idText.getText());
+						firstPatientByNameList = firstPatientByName;
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						} catch (InterruptedException e1) {
@@ -141,6 +144,86 @@ public class SWTPateintTable {
 					if (table != null) {
 						table.removeAll();
 						table.dispose();
+					}
+					if (firstPatientByNameList != null) {
+						table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+						table.setLinesVisible(true);
+						table.setHeaderVisible(true);
+						table.setBounds(30, 130, 900, 150);
+						GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+						data.heightHint = 200;
+						table.setLayoutData(data);
+
+						String[] titles = { "patientId", "patientName", "dateOfBirth", "genderCode", "addID1",
+								"addType", "addLine1", "addLine2", "city", "state", "postalCode", "countryCode",
+								"addID2", "addType", "addLine1", "addLine2", "city", "state", "postalCode",
+								"countryCode", "teleID1", "teleType", "teleNumber", "isdCode", "teleID2", "teleType",
+								"teleNumber", "isdCode" };
+						for (int i = 0; i < titles.length; i++) {
+							TableColumn column = new TableColumn(table, SWT.NONE);
+							column.setText(titles[i]);
+							table.getColumn(i).pack();
+						}
+
+						
+					//	TableItem item = new TableItem(table, SWT.NONE);
+						
+						
+						for(Patient firstPatient:firstPatientByNameList)
+						{
+						TableItem item = new TableItem(table, SWT.ITALIC);
+						item.setText(0, firstPatient.getPatient_id().toString());
+						item.setText(1, firstPatient.getPatientName().toString());
+						item.setText(2, firstPatient.getDateOfBirth().toString());
+						item.setText(3, firstPatient.getGenderCode().toString());
+						item.setText(4, firstPatient.getAddressList().get(0).getId().toString());
+						item.setText(5, firstPatient.getAddressList().get(0).getAddressType().toString());
+						item.setText(6, firstPatient.getAddressList().get(0).getAddressLine1().toString());
+						item.setText(7, firstPatient.getAddressList().get(0).getAddressLine2().toString().toString());
+						item.setText(8, firstPatient.getAddressList().get(0).getCity().toString());
+						item.setText(9, firstPatient.getAddressList().get(0).getState().toString());
+						item.setText(10, firstPatient.getAddressList().get(0).getPostalCode().toString());
+						item.setText(11, firstPatient.getAddressList().get(0).getCountry().toString());
+						item.setText(12, firstPatient.getAddressList().get(1).getId().toString());
+						item.setText(13, firstPatient.getAddressList().get(1).getAddressType().toString());
+						item.setText(14, firstPatient.getAddressList().get(1).getAddressLine1().toString());
+						item.setText(15, firstPatient.getAddressList().get(1).getAddressLine2().toString().toString());
+						item.setText(16, firstPatient.getAddressList().get(1).getCity().toString());
+						item.setText(17, firstPatient.getAddressList().get(1).getState().toString());
+						item.setText(18, firstPatient.getAddressList().get(1).getPostalCode().toString());
+						item.setText(19, firstPatient.getAddressList().get(1).getCountry().toString());
+						item.setText(20, firstPatient.getTelephoneList().get(0).getId().toString());
+						item.setText(21, firstPatient.getTelephoneList().get(0).getTelephoneType().toString());
+						item.setText(22,
+								firstPatient.getTelephoneList().get(0).getTelephoneNumber().toString().toString());
+						item.setText(23, firstPatient.getTelephoneList().get(0).getTelephonCountryCode().toString());
+						item.setText(24, firstPatient.getTelephoneList().get(1).getId().toString());
+						item.setText(25, firstPatient.getTelephoneList().get(1).getTelephoneType().toString());
+						item.setText(26, firstPatient.getTelephoneList().get(1).getTelephoneNumber().toString());
+						item.setText(27, firstPatient.getTelephoneList().get(1).getTelephonCountryCode().toString());
+					}
+						for (int i = 0; i < titles.length; i++) {
+							table.getColumn(i).pack();
+						}
+
+						table.addListener(SWT.Selection, new Listener() {
+							@Override
+							public void handleEvent(Event arg0) {
+								String tableContent = "";
+								TableItem[] selectedColumns = table.getSelection();
+								for (int i = 0; i < selectedColumns.length; i++) {
+									tableContent += selectedColumns[i].getText(i) + " ";
+								}
+								if (tableContent != null && tableContent != "") {
+									viewButton.setEnabled(true);
+									deleteButton.setEnabled(true);
+									modifyButton.setEnabled(true);
+								}
+
+							}
+
+						});
+
 					}
 					if (firstPatient != null && firstPatient.getPatient_id() > 0) {
 						table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
@@ -226,7 +309,7 @@ public class SWTPateintTable {
 		viewButton.setEnabled(false);
 		viewButton.setVisible(true);
 		viewButton.setBackground(buttonColor);
-		PatientForm.locateButton.setEnabled(false);
+		PatientForm.locateButton.setEnabled(true);
 		viewButton.setBounds(500, 300, 900, 31);
 		viewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -238,7 +321,7 @@ public class SWTPateintTable {
 						patient = SWTRestClient.fetchPatientListById(columns.getText(0));
 					}
 					form.setDataForFieldsForModifyAndCrate(patient, display, false);
-					shell.close();
+					////shell.close();
 				} catch (IOException | InterruptedException ex) {
 					ex.printStackTrace();
 				}
@@ -256,7 +339,7 @@ public class SWTPateintTable {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("Called view!");
-				PatientForm.locateButton.setEnabled(false);
+				PatientForm.locateButton.setEnabled(true);
 
 				try {
 					TableItem[] selectedColumns = table.getSelection();
@@ -266,7 +349,7 @@ public class SWTPateintTable {
 						patient = SWTRestClient.fetchPatientListById(columns.getText(0));
 					}
 					form.setDataForFieldsForModifyAndCrate(patient, display, true);
-					shell.close();
+				////	shell.close();
 				} catch (IOException | InterruptedException ex) {
 					MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR);
 					messageBox.setText("Error");
@@ -307,7 +390,7 @@ public class SWTPateintTable {
 						case SWT.CANCEL:
 						}
 						PatientForm.locateButton.setEnabled(true);
-						shell.close();
+					////	shell.close();
 
 					}
 				} catch (Exception ex) {
